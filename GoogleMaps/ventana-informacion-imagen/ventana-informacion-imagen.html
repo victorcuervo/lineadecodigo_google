@@ -1,39 +1,84 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Ventana de información con imagen</title>
-<script src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1gybajGje1CxFHgzphPqhBTkhzudNWd_u13Cffh29fB-9TXQzxQVh6gduUCW9NeYlGOi-AFsvIHQpg"
-      type="text/javascript"></script>
-      
-<script type="text/javascript">
-
-//<![CDATA[
-    
-function load(){
-  if (GBrowserIsCompatible()) {
-	// Nos posicionamos en Bejar
-    var map = new GMap2(document.getElementById("mapa"));
-    map.setCenter(new GLatLng(40.383651,-5.765891), 15);
-
-	// Posicionamos la Casa Rural Los Tejos                       
-    map.openInfoWindowHtml(new GLatLng(40.381351,-5.764591),"<h3>Casa Rural Los Tejos</h3><img src='casarural.jpg' style='float:left;margin-right:40px;'> Distribución:<ul><li>1 Habitación de matrimonio</li><li>2 habitaciones dobles</li><li>2 cuartos de baño completos</li><li>1 aseo</li><li>Cocina</li><li>...</li></ul>");
-
-  }
-}
-//]]>
-</script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ventana de informaciÃ³n con imagen</title>
+  <style>
+    #mapa {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
 </head>
-<body onload="load();" onunload="GUnload();">
-<h1>Ventana de información con imagen</h1>
+<body>
+	<h1>Ventana de informaciÃ³n con imagen</h1>
+	
+	<div id="mapa" aria-label="Mapa con la ubicaciÃ³n de Casa Rural Los Tejos"></div>
+	
+	<script
+		async
+		src="https://maps.googleapis.com/maps/api/js?key=TU-CLAVE&loading=async&callback=initMap">
+	</script>
 
-<div id="mapa" style="width: 800px;height: 600px;">
-</div>
+  <script>
 
-<hr/>
-Art&iacute;culo disponible en: <a href="http://lineadecodigo.com/google/ventanas-de-informacion-con-imagenes-en-google-maps/">http://lineadecodigo.com/google/ventanas-de-informacion-con-imagenes-en-google-maps/</a><br/>
-<a href="http://lineadecodigo.com" title="Linea de Codigo">lineadecodigo.com</a>
+      async function initMap() {
+      const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
+      const posicion = { lat: 40.381351, lng: -5.764591 };
+
+      const mapa = new Map(document.getElementById("mapa"), {
+        center: posicion,
+        zoom: 15,
+        mapId: "mapa",
+      });
+
+      const marcador = new AdvancedMarkerElement({
+        map: mapa,
+        position: posicion,
+        title: "Casa Rural Los Tejos",
+        gmpClickable: true,
+      });
+
+      const contenido = document.createElement("article");
+      contenido.className = "ventana-informacion";
+      contenido.innerHTML = `
+        <h3>Casa Rural Los Tejos</h3>
+        <img
+          src="casarural.jpg"
+          alt="Fachada de Casa Rural Los Tejos"
+          width="180"
+          height="120">
+        <p>DistribuciÃ³n:</p>
+        <ul>
+          <li>1 habitaciÃ³n de matrimonio</li>
+          <li>2 habitaciones dobles</li>
+          <li>2 cuartos de baÃ±o completos</li>
+          <li>1 aseo</li>
+          <li>Cocina</li>
+        </ul>
+      `;
+
+      const ventana = new InfoWindow({
+        content: contenido,
+        ariaLabel: "InformaciÃ³n de Casa Rural Los Tejos",
+      });
+
+      marcador.addEventListener("gmp-click", () => {
+        ventana.open({
+          map: mapa,
+          anchor: marcador,
+        });
+      });
+    }
+  </script>
+	
+	<hr>
+	<p>ArtÃ­culo disponible en: <a href="http://lineadecodigo.com/google/ventanas-de-informacion-con-imagenes-en-google-maps/">http://lineadecodigo.com/google/ventanas-de-informacion-con-imagenes-en-google-maps/</a></p>
+	<p><a href="http://lineadecodigo.com" title="Linea de Codigo">lineadecodigo.com</a></p>
+	
 
 </body>
 </html>
